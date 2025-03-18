@@ -12,7 +12,7 @@ html = """
     <h1>{{ message }}</h1>
 
     <form method="POST">
-        <label for="name">Enter your name:</label>
+        <label for="name">Enter your names:</label>
         <input type="text" id="name" name="name">
         <button type="submit">Submit</button>
     </form>
