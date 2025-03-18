@@ -23,8 +23,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t murali54321/my-flask-app .
-          docker push murali54321/my-flask-app
+          docker build -t murali54321/my-flask-app:latest .
+          docker push murali54321/my-flask-app:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -33,16 +33,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Configure Kubeconfig
+      - name: Install Minikube
         run: |
-          echo "${{ secrets.KUBECONFIG }}" > kubeconfig
-          export KUBECONFIG=kubeconfig
+          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
-      - name: Update Kubernetes Deployment
+      - name: Start Minikube
         run: |
-          kubectl set image deployment/flask-app flask-app=murali54321/my-flask-app --record
+          minikube start --driver=docker
+
+      - name: Verify Minikube is Running
+        run: kubectl get nodes
+
+      - name: Apply Kubernetes Deployment
+        run: |
+          kubectl apply -f deployment.yaml
+          kubectl set image deployment/flask-app flask-app=murali54321/my-flask-app:latest --record
