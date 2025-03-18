@@ -47,5 +47,6 @@ jobs:
 
       - name: Apply Kubernetes Deployment
         run: |
-          kubectl apply -f deployment.yaml
+          kubectl apply -f kubernetes/deployment.yaml
+          kubectl apply -f kubernetes/service.yaml  # Ensure service is also applied
           kubectl set image deployment/flask-app flask-app=murali54321/my-flask-app:latest --record
